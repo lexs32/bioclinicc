@@ -35,14 +35,107 @@ for (const method of ['log', 'info', 'warn', 'error', 'debug'] as const) {
   };
 }
 
+import { secureHeaders } from 'hono/secure-headers';
+import { compress } from 'hono/compress';
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 const adapter = NeonAdapter(pool);
 
+// Simple, fast in-memory rate limiter (100 requests / minute per IP)
+const ipRequestCounts = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const MAX_REQUESTS = 100;
+
+const rateLimiter = async (c: any, next: any) => {
+  const ip = c.req.header('x-forwarded-for') || c.req.header('x-real-ip') || 'unknown';
+  const now = Date.now();
+  const record = ipRequestCounts.get(ip);
+
+  if (!record || now > record.resetTime) {
+    ipRequestCounts.set(ip, {
+      count: 1,
+      resetTime: now + RATE_LIMIT_WINDOW,
+    });
+    return next();
+  }
+
+  record.count += 1;
+  if (record.count > MAX_REQUESTS) {
+    c.header('Retry-After', Math.ceil((record.resetTime - now) / 1000).toString());
+    return c.json({ error: 'Trop de requêtes. Veuillez réessayer plus tard.' }, 429);
+  }
+
+  return next();
+};
+
 const app = new Hono();
 
+// Apply request tracking ID
 app.use('*', requestId());
+
+// Enable HTTP security headers with strong policies
+app.use(
+  '*',
+  secureHeaders({
+    contentSecurityPolicy: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "https://va.vercel-scripts.com",
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://fonts.googleapis.com",
+        "https://ka-p.fontawesome.com",
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+        "https://ka-p.fontawesome.com",
+        "data:",
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "https://dtvoeevhaseb5.cloudfront.net",
+        "https://maps.googleapis.com",
+        "https://maps.gstatic.com",
+      ],
+      connectSrc: [
+        "'self'",
+        "https://vitals.vercel-insights.com",
+        "https://ka-p.fontawesome.com",
+      ],
+      frameAncestors: ["'none'"],
+      objectSrc: ["'none'"],
+    },
+    referrerPolicy: 'no-referrer-when-downgrade',
+    xFrameOptions: 'DENY',
+    xContentTypeOptions: 'nosniff',
+  })
+);
+
+// Enable automatic Brotli/Gzip response compression for faster loading
+app.use('*', compress());
+
+// Apply aggressive caching for static assets to boost performance
+app.use('*', async (c, next) => {
+  const url = c.req.path;
+  if (url.startsWith('/assets/')) {
+    c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (url.match(/\.(?:png|jpg|jpeg|gif|ico|svg|webp|woff2?)$/)) {
+    c.header('Cache-Control', 'public, max-age=86400');
+  }
+  await next();
+});
+
+// Apply rate limiter to all routes
+app.use('*', rateLimiter);
 
 app.use('*', (c, next) => {
   const requestId = c.get('requestId');
