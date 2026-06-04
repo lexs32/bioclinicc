@@ -19,7 +19,13 @@ type Tree = {
 };
 
 function buildRouteTree(dir: string, basePath = ''): Tree {
-	const files = readdirSync(dir);
+	let files: string[] = [];
+	try {
+		files = readdirSync(dir);
+	} catch (e) {
+		// Fallback gracefully if directory is missing during build time
+	}
+
 	const node: Tree = {
 		path: basePath,
 		children: [],
