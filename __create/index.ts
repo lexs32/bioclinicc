@@ -386,7 +386,13 @@ app.use('/api/auth/*', async (c, next) => {
 });
 app.route(API_BASENAME, api);
 
-export default await createHonoServer({
-  app,
-  defaultLogger: false,
-});
+let server;
+if (process.env.VERCEL || process.env.NOW_REGION) {
+  server = app;
+} else {
+  server = await createHonoServer({
+    app,
+    defaultLogger: false,
+  });
+}
+export default server;
