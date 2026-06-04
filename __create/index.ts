@@ -70,7 +70,7 @@ const rateLimiter = async (c: any, next: any) => {
   return next();
 };
 
-const app = new Hono();
+export const app = new Hono();
 
 // Apply request tracking ID
 app.use('*', requestId());
