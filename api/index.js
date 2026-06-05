@@ -5,7 +5,10 @@ console.log("API entrypoint loaded, app is:", !!app);
 
 const handler = handle(app);
 
-export default (req, res) => {
-  console.log("Vercel function invoked for path:", req.url);
-  return handler(req, res);
-};
+export const GET = handler;
+export const POST = handler;
+export const PUT = handler;
+export const PATCH = handler;
+export const DELETE = handler;
+export const HEAD = handler;
+export const OPTIONS = handler;
