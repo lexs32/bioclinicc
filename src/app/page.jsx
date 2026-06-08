@@ -177,7 +177,7 @@ function GetDeptIcon({ index }) {
 function InternalBrandmark({ inverted = false }) {
   const isDark = inverted;
   
-  // Official Hex colors extracted from brand identity
+  // Official Hex colors extracted from molecular bubble logo
   const lightTeal = "#A2D7C5";
   const mediumTeal = "#7CBCA5";
   const darkPurple = "#5F5095";
@@ -188,20 +188,18 @@ function InternalBrandmark({ inverted = false }) {
   return (
     <div className="flex items-center gap-3 select-none" style={{ direction: "ltr" }}>
       <svg width="38" height="38" viewBox="0 0 100 100" fill="none" className="flex-shrink-0">
-        {/* Outer Circle Ring */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? "rgba(255,255,255,0.2)" : "rgba(95,80,149,0.15)"} strokeWidth="4" />
+        {/* Organic connection paths mimicking official logo shape */}
+        <path d="M46 22 L46 52" stroke={mediumTeal} strokeWidth="14" strokeLinecap="round" />
+        <path d="M22 36 L46 52" stroke={mediumTeal} strokeWidth="14" strokeLinecap="round" />
+        <path d="M46 52 L50 74" stroke={mediumTeal} strokeWidth="14" strokeLinecap="round" />
         
-        {/* Top-Left Swoosh (Teal / Brand color) */}
-        <path
-          d="M 50 10 A 40 40 0 0 0 10 50 C 10 70 25 85 45 88 C 42 76 35 68 35 55 C 35 38 48 30 50 10 Z"
-          fill={isDark ? lightTeal : mediumTeal}
-        />
-        
-        {/* Bottom-Right Swoosh (Purple / White) */}
-        <path
-          d="M 50 90 A 40 40 0 0 0 90 50 C 90 30 75 15 55 12 C 58 24 65 32 65 45 C 65 62 52 70 50 90 Z"
-          fill={isDark ? "#FFFFFF" : darkPurple}
-        />
+        {/* Logo bubble nodes */}
+        <circle cx="46" cy="22" r="13" fill={lightTeal} />
+        <circle cx="74" cy="36" r="11" fill={lightTeal} />
+        <circle cx="22" cy="36" r="13" fill={mediumTeal} />
+        <circle cx="46" cy="52" r="13" fill={mediumTeal} />
+        <circle cx="50" cy="74" r="13" fill={mediumTeal} />
+        <circle cx="22" cy="62" r="12" fill={darkPurple} />
       </svg>
 
       <div className="flex flex-col leading-none">
