@@ -1,21 +1,16 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./global.css";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      cacheTime: 30 * 60 * 1000,
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+export const metadata = {
+  title: "Laboratoire BIOCLINIC | Analyses Médicales Rabat Agdal",
+  description: "Laboratoire d'analyses médicales à Agdal, Rabat. Analyses de routine et spécialisées, prélèvement à domicile, résultats en ligne.",
+};
 
 const GLOBAL_GUARD_CSS = `
   body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: #FAF9F9;
   }
   .display-editorial-heavy {
     font-family: 'Outfit', sans-serif !important;
@@ -28,21 +23,21 @@ const GLOBAL_GUARD_CSS = `
 
 export default function RootLayout({ children }) {
   return (
-    <>
-      {/* Google Fonts: Inter (body) + Outfit 800/700 (premium curved heads) */}
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin="anonymous"
-      />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
-      />
-      <style dangerouslySetInnerHTML={{ __html: GLOBAL_GUARD_CSS }} />
-
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </>
+    <html lang="fr" className="scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+        />
+        <style dangerouslySetInnerHTML={{ __html: GLOBAL_GUARD_CSS }} />
+      </head>
+      <body>{children}</body>
+    </html>
   );
 }
