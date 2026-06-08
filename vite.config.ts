@@ -78,6 +78,10 @@ export default defineConfig({
       '@auth/create/react': '@hono/auth-js/react',
       '@auth/create': path.resolve(__dirname, './src/__create/@auth/create'),
       '@': path.resolve(__dirname, 'src'),
+      ...(process.env.VERCEL ? {
+        '@hono/node-server$': path.resolve(__dirname, './src/__create/hono-node-server-mock.ts'),
+        '@hono/node-server/serve-static$': path.resolve(__dirname, './src/__create/hono-node-server-serve-static-mock.ts')
+      } : {})
     },
     dedupe: ['react', 'react-dom'],
   },

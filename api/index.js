@@ -1,5 +1,5 @@
 import { handle } from 'hono/vercel';
-import { app } from '../build/server/index.js';
+import app from '../build/server/index.js';
 
 console.log("API entrypoint loaded, app is:", !!app);
 
