@@ -20,7 +20,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://dtvoeevhaseb5.cloudfront.net https://maps.googleapis.com https://maps.gstatic.com; connect-src 'self' https://vitals.vercel-insights.com;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://dtvoeevhaseb5.cloudfront.net https://maps.googleapis.com https://maps.gstatic.com; connect-src 'self' https://vitals.vercel-insights.com; frame-src 'self' https://www.google.com;",
           }
         ],
       },
